@@ -1,0 +1,42 @@
+{
+    "name": "aoe/event-based-scheduler",
+    "description": "Allow scheduler tasks trigger by events",
+    "type": "typo3-cms-extension",
+    "homepage": "https://github.com/kschu91/TYPO3-Event-Based-Scheduler",
+    "license": "GPL-3.0",
+    "support": {
+        "email": "dev@aoe.com",
+        "issues": "https://github.com/kschu91/TYPO3-Event-Based-Scheduler/issues",
+        "source": "https://github.com/kschu91/TYPO3-Event-Based-Scheduler"
+    },
+    "authors": [
+        {
+            "name": "AOE GmbH",
+            "email": "dev@aoe.com",
+            "homepage": "http://www.aoe.com"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0",
+        "typo3/cms-core": "*",
+        "typo3/cms-extbase": "*"
+    },
+    "require-dev": {
+        "typo3/cms": "6.2.*",
+        "phpunit/phpunit": "4.8.*",
+        "phpunit/phpcov": "2.0.*",
+        "squizlabs/php_codesniffer": "2.3.*",
+        "sebastian/phpcpd": "2.0.*",
+        "phpmd/phpmd": "2.2.*"
+    },
+    "replace": {
+        "event_based_scheduler": "*"
+    },
+    "keywords": [
+        "TYPO3",
+        "extbase",
+        "extension",
+        "scheduler",
+        "event"
+    ]
+}
