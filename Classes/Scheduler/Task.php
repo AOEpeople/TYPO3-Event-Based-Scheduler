@@ -15,5 +15,24 @@ use TYPO3\CMS\Extbase\Scheduler\Task as ExtbaseTask;
 
 class Task extends ExtbaseTask
 {
+    /**
+     * @var string
+     */
+    protected $event;
 
+    /**
+     * @return string
+     */
+    public function getEvent()
+    {
+        return $this->event;
+    }
+
+    /**
+     * @param string $event
+     */
+    public function setEvent($event)
+    {
+        $this->event = $event;
+    }
 }

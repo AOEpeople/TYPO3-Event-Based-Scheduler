@@ -20,12 +20,25 @@ class FieldProvider extends ExtbaseFieldProvider
 {
     /**
      * @param array $taskInfo
-     * @param mixed $task
+     * @param Task $task
      * @param SchedulerModuleController $schedulerModule
      * @return array
      */
     public function getAdditionalFields(array &$taskInfo, $task, SchedulerModuleController $schedulerModule)
     {
+        $selected = null;
+        if (isset($taskInfo['event'])) {
+            $selected = $taskInfo['event'];
+        } else {
+            if ($task instanceof Task) {
+                $selected = $task->getEvent();
+            }
+        }
+        if ($task instanceof Task) {
+            $task->setScheduler();
+            $task->setEvent($selected);
+            $task->save();
+        }
         /** @var Dispatcher $dispatcher */
         $dispatcher = GeneralUtility::makeInstance(Dispatcher::class);
         $fields = parent::getAdditionalFields($taskInfo, $task, $schedulerModule);
@@ -33,7 +46,7 @@ class FieldProvider extends ExtbaseFieldProvider
             $fields,
             array(
                 'event' => array(
-                    'code' => $this->buildSelect($this->getSlots($dispatcher), $taskInfo),
+                    'code' => $this->buildSelect($this->getSlots($dispatcher), $selected),
                     'label' => 'label',
                     'cshKey' => '',
                     'cshLabel' => ''
@@ -44,30 +57,29 @@ class FieldProvider extends ExtbaseFieldProvider
 
     /**
      * @param array $slots
-     * @param array $taskInfo
+     * @param string $selected
      * @return string
      */
-    protected function buildSelect(array $slots, array $taskInfo)
+    protected function buildSelect(array $slots, $selected = null)
     {
         $format = '<select name="tx_scheduler[event]">%s</select>';
-        return sprintf($format, $this->buildOptions($slots, $taskInfo));
+        return sprintf($format, $this->buildOptions($slots, $selected));
     }
 
     /**
      * @param array $slots
-     * @param array $taskInfo
+     * @param string $selected
      * @return string
      */
-    protected function buildOptions(array $slots, array $taskInfo)
+    protected function buildOptions(array $slots, $selected = null)
     {
         $options = array();
-        $selected = 'selected="selected"';
         $format = '<option %s value="%s">%s</option>';
         foreach ($slots as $signalClass => $events) {
             foreach ($events as $signalMethod => $event) {
                 $value = "$signalClass:$signalMethod";
-                if ($taskInfo['event'] === $value) {
-                    $options[] = sprintf($format, $selected, $value, $value);
+                if ($selected === $value) {
+                    $options[] = sprintf($format, 'selected="selected"', $value, $value);
                 }
                 $options[] = sprintf($format, '', $value, $value);
             }
