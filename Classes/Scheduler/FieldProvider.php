@@ -33,7 +33,7 @@ class FieldProvider extends ExtbaseFieldProvider
             $fields,
             array(
                 'event' => array(
-                    'code' => $this->buildSelect($this->getSlots($dispatcher)),
+                    'code' => $this->buildSelect($this->getSlots($dispatcher), $taskInfo),
                     'label' => 'label',
                     'cshKey' => '',
                     'cshLabel' => ''
@@ -44,25 +44,32 @@ class FieldProvider extends ExtbaseFieldProvider
 
     /**
      * @param array $slots
+     * @param array $taskInfo
      * @return string
      */
-    protected function buildSelect(array $slots)
+    protected function buildSelect(array $slots, array $taskInfo)
     {
         $format = '<select name="tx_scheduler[event]">%s</select>';
-        return sprintf($format, $this->buildOptions($slots));
+        return sprintf($format, $this->buildOptions($slots, $taskInfo));
     }
 
     /**
      * @param array $slots
+     * @param array $taskInfo
      * @return string
      */
-    protected function buildOptions(array $slots)
+    protected function buildOptions(array $slots, array $taskInfo)
     {
         $options = array();
-        $format = '<option value="%s">%s</option>';
+        $selected = 'selected="selected"';
+        $format = '<option %s value="%s">%s</option>';
         foreach ($slots as $signalClass => $events) {
             foreach ($events as $signalMethod => $event) {
-                $options[] = sprintf($format, "$signalClass:$signalMethod");
+                $value = "$signalClass:$signalMethod";
+                if ($taskInfo['event'] === $value) {
+                    $options[] = sprintf($format, $selected, $value, $value);
+                }
+                $options[] = sprintf($format, '', $value, $value);
             }
         }
         return implode('', $options);
